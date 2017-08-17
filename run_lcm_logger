@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+me=$(python -c 'import os; print(os.path.realpath("'"$0"'"))')
+MY_DIR=$(dirname $me)
+
+. $MY_DIR/setup_environment.sh
+
+exec $DRAKE_DIR/bazel-bin/external/lcm/lcm-logger -i -v -c PMD_.\* $*

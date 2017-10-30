@@ -1,8 +1,8 @@
 {
     "robot_name": "octopus",
     "gripper_address": "192.168.1.22",
-    "gripper_remote_port": "1600",
-    "gripper_local_port": "1601",
+    "gripper_remote_port": "1700",
+    "gripper_local_port": "1701",
     "iiwa_port": "30201",
     "container": "iiwa_octopus"
 }

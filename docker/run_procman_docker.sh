@@ -13,7 +13,6 @@ MY_DIR=$(dirname $me)
 export DRAKE_DIR=$SPARTAN_DIR/drake
 export DRAKE_BIN_DIR=$DRAKE_DIR/bazel-bin
 
-echo "environment:"
-set
+cd $DRAKE_DIR
 
 $SPARTAN_INSTALL_DIR/bin/bot-procman-sheriff -l $MY_DIR/iiwa_hardware_docker.pmd

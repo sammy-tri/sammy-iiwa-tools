@@ -1,0 +1,88 @@
+group "1.vision-drivers" {
+    cmd "0.optitrack-driver" {
+    	exec = "$DRAKE_BIN_DIR/external/optitrack_driver/src/optitrack_client";
+        host = "localhost";
+    }
+    cmd "2.openni-driver" {
+        exec = "openni2-camera-lcm";
+        host = "localhost";
+    }
+    cmd "3.rgbd-viewer" {
+       exec = "directorPython -m director.imageviewapp --bot-config $SPARTAN_SOURCE_DIR/apps/iiwa/iiwaManip.cfg --channel OPENNI_FRAME --rgbd --pointcloud";
+       host = "localhost";
+    }
+
+}
+
+group "2.1.iiwa-drivers" {
+    cmd "0.kuka-driver" {
+        exec = "kuka_driver --fri_port $IIWA_PORT";
+        host = "localhost";
+    }
+}
+
+group "2.3.iiwa-sim" {
+    cmd "0.kuka-sim" {
+        exec = "$DRAKE_BIN_DIR/drake/examples/kuka_iiwa_arm/dev/monolithic_pick_and_place/lcm_pick_and_place_simulator";
+        host = "localhost";
+    }
+}
+
+group "2.2.iiwa-plan-interface" {
+    cmd "1.iiwa_controller" {
+        exec = "$DRAKE_BIN_DIR/drake/examples/kuka_iiwa_arm/iiwa_controller";
+        host = "localhost";
+    }
+    cmd "2.state-translator" {
+        exec = "directorPython $DRAKE_DIR/drake/examples/kuka_iiwa_arm/kuka_iiwa_state_translator.py --director_config $DRAKE_DIR/drake/examples/kuka_iiwa_arm/director_config.json";
+        host = "localhost";
+    }
+}
+
+group "3.schunk-driver" {
+    cmd "0.schunk-driver" {
+        exec = "$SPARTAN_BUILD_DIR/externals/drake-schunk-driver/bazel-bin/src/schunk_driver --gripper_addr $GRIPPER_ADDRESS --gripper_port $GRIPPER_REMOTE_PORT --local_port $GRIPPER_LOCAL_PORT";
+        host = "localhost";
+    }
+}
+
+cmd "4.pick-and-place" {
+        exec = "$DRAKE_BIN_DIR/drake/examples/kuka_iiwa_arm/dev/monolithic_pick_and_place/lcm_pick_and_place_demo --iiwa_index 0 --target 0 --spdlog_level debug --nouse_channel_suffix";
+        host = "localhost";
+}
+
+cmd "5.drake-visualizer" {
+    exec = "drake-visualizer";
+    host = "localhost";
+}
+
+cmd "6.director" {
+  exec = "kuka_iiwa_app";
+  host = "localhost";
+}
+
+cmd "7.lcm-spy" {
+    exec = "drake-lcm-spy";
+    host = "localhost";
+}
+
+cmd "8.signal-scope" {
+    exec = "signal-scope $SPARTAN_SOURCE_DIR/config/iiwa/kuka_iiwa_signal_scope.py";
+    host = "localhost";
+}
+
+script "start-drivers" {
+    stop cmd "1.iiwa_controller" wait "stopped";
+    start cmd "0.kuka-driver";
+    start cmd "1.iiwa_controller";
+    start cmd "2.state-translator";
+    start cmd "0.schunk-driver";
+}
+
+script "stop-drivers-and-demo" {
+    stop cmd "0.kuka-driver" wait "stopped";
+    stop cmd "1.iiwa_controller" wait "stopped";
+    stop cmd "2.state-translator" wait "stopped";
+    stop cmd "0.schunk-driver" wait "stopped";
+    stop cmd "4.pick-and-place" wait "stopped";
+}

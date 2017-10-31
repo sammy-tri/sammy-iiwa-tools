@@ -15,4 +15,4 @@ export DRAKE_BIN_DIR=$DRAKE_DIR/bazel-bin
 
 cd $DRAKE_DIR
 
-$SPARTAN_INSTALL_DIR/bin/bot-procman-sheriff -l $MY_DIR/iiwa_hardware_docker.pmd
+$SPARTAN_INSTALL_DIR/bin/bot-procman-sheriff -l $MY_DIR/$PROCMAN_CONFIG

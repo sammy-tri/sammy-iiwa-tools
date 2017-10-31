@@ -19,6 +19,10 @@ group "2.1.iiwa-drivers" {
         exec = "kuka_driver --fri_port $IIWA_PORT";
         host = "localhost";
     }
+    cmd "1.lcm-logger" {
+        exec = "lcm-logger -i --split-mb=512 $LOGFILE_BASE";
+        host = "localhost";
+    }
 }
 
 group "2.3.iiwa-sim" {
@@ -73,14 +77,14 @@ cmd "8.signal-scope" {
 
 script "start-drivers" {
     stop cmd "1.iiwa_controller" wait "stopped";
-    start cmd "0.kuka-driver";
+    start group "2.1.iiwa-drivers";
     start cmd "1.iiwa_controller";
     start cmd "2.state-translator";
     start cmd "0.schunk-driver";
 }
 
 script "stop-drivers-and-demo" {
-    stop cmd "0.kuka-driver" wait "stopped";
+    stop group "2.1.iiwa-drivers" wait "stopped";
     stop cmd "1.iiwa_controller" wait "stopped";
     stop cmd "2.state-translator" wait "stopped";
     stop cmd "0.schunk-driver" wait "stopped";

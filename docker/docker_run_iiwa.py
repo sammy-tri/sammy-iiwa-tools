@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import getpass
 import json
 import os
@@ -12,6 +13,8 @@ mandatory_fields = [
     "gripper_local_port",
     "gripper_remote_port",
     "iiwa_port",
+    "log_directory",
+    "procman_config",
 ]
 
 optional_fields = [
@@ -97,6 +100,8 @@ def main():
             cmd += " -e " + key.upper() + "=\"" + robot_config[key] + "\""
 
     cmd += " -e SPARTAN_DIR=" + home_directory + "/spartan"
+    cmd += " -e LOGFILE_BASE=" + home_directory + "/logs/" + robot_config["robot_name"] + datetime.date.today().isoformat()
+    cmd += " -v " + robot_config["log_directory"] + ":" + home_directory + "/logs"
     # login as current user
     cmd += " --user %s " % user_name
 

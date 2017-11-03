@@ -6,5 +6,7 @@
     "iiwa_port": "30201",
     "container": "iiwa_octopus",
     "log_directory": "/home/robot-lab/logs/octopus",
-    "procman_config": "lcm_pick_and_place.pmd"
+    "procman_config": "lcm_pick_and_place.pmd",
+    "iiwa_index": "1",
+    "target_index": "1"
 }

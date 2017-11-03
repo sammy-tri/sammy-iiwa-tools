@@ -6,5 +6,7 @@
     "iiwa_port": "30200",
     "container": "iiwa_squid",
     "log_directory": "/home/robot-lab/logs/squid",
-    "procman_config": "lcm_pick_and_place.pmd"
+    "procman_config": "lcm_pick_and_place.pmd",
+    "iiwa_index": "0",
+    "target_index": "0"
 }

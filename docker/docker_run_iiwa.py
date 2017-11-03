@@ -20,6 +20,8 @@ mandatory_fields = [
 optional_fields = [
     "container",
     "image",
+    "target_index",
+    "iiwa_index",
 ]
 
 def load_robot_config(config_file):

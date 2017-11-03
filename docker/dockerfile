@@ -19,6 +19,9 @@ WORKDIR /home/$USER_NAME
 # require no sudo pw in docker
 RUN echo $USER_PASSWORD | sudo -S bash -c 'echo "'$USER_NAME' ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/docker-user' && printf "\n"
 
+# Install some packages which are convenient for interactive shells
+RUN apt install iptables less vim ccache
+
 COPY spartan /home/$USER_NAME/spartan
 COPY iiwa-tools /home/$USER_NAME/iiwa-tools
 

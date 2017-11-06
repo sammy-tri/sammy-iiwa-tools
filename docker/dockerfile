@@ -20,7 +20,7 @@ WORKDIR /home/$USER_NAME
 RUN echo $USER_PASSWORD | sudo -S bash -c 'echo "'$USER_NAME' ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/docker-user' && printf "\n"
 
 # Install some packages which are convenient for interactive shells
-RUN apt install iptables less vim ccache
+RUN apt install iptables less vim ccache iproute2 tcpdump
 
 COPY spartan /home/$USER_NAME/spartan
 COPY iiwa-tools /home/$USER_NAME/iiwa-tools

@@ -2,6 +2,8 @@
 
 set -e
 
+sudo hostname $ROBOT_NAME
+
 me=$(python -c 'import os; print(os.path.realpath("'"$0"'"))')
 MY_DIR=$(dirname $me)
 #echo $MY_DIR

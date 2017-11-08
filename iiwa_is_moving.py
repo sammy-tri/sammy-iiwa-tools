@@ -3,9 +3,18 @@
 import argparse
 import datetime
 import os
+import sys
+
+# Yes, I'm just going to hardcode the location where this usually
+# lives in the docket image.  Sigh.
+docker_spartan_python = "/home/robot-lab/spartan/build/install/lib/python2.7/site-packages/"
+
+if os.path.isdir(docker_spartan_python):
+    sys.path.append(docker_spartan_python)
 
 import drake
 import lcm
+
 
 class IiwaMovingChecker(object):
     def __init__(self):

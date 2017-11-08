@@ -1,12 +1,11 @@
 {
     "robot_name": "squid",
-    "gripper_address": "192.168.1.20",
-    "gripper_remote_port": "1500",
-    "gripper_local_port": "1501",
+    "gripper_address": "192.168.1.22",
+    "gripper_remote_port": "1700",
+    "gripper_local_port": "1701",
     "iiwa_port": "30200",
     "container": "iiwa_squid",
     "log_directory": "/home/robot-lab/logs/squid",
     "procman_config": "lcm_pick_and_place.pmd",
-    "iiwa_index": "0",
-    "target_index": "0"
+    "task_index": "0"
 }

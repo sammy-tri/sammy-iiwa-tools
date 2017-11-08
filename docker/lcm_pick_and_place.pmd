@@ -51,7 +51,7 @@ group "3.schunk-driver" {
 }
 
 cmd "4.pick-and-place" {
-        exec = "$DRAKE_BIN_DIR/drake/examples/kuka_iiwa_arm/dev/monolithic_pick_and_place/lcm_pick_and_place_demo --iiwa_index $IIWA_INDEX --target $TARGET_INDEX --spdlog_level debug --nouse_channel_suffix";
+        exec = "$DRAKE_BIN_DIR/drake/examples/kuka_iiwa_arm/dev/monolithic_pick_and_place/lcm_pick_and_place_demo --task_index $TASK_INDEX --spdlog_level debug --nouse_channel_suffix";
         host = "localhost";
 }
 

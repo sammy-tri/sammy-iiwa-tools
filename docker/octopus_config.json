@@ -5,7 +5,7 @@
     "gripper_local_port": "1801",
     "iiwa_port": "30201",
     "container": "iiwa_octopus",
-    "log_directory": "/home/robot-lab/logs/octopus",
+    "log_directory": "/media/logs/octopus",
     "procman_config": "lcm_pick_and_place.pmd",
     "task_index": "1"
 }

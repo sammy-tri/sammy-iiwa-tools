@@ -76,8 +76,10 @@ cmd "8.signal-scope" {
 }
 
 script "start-drivers" {
+    stop cmd "4.pick-and-place" wait "stopped";
     stop cmd "1.iiwa_controller" wait "stopped";
     start group "2.1.iiwa-drivers";
+    start cmd "0.optitrack-driver";
     start cmd "1.iiwa_controller";
     start cmd "2.state-translator";
     start cmd "0.schunk-driver";

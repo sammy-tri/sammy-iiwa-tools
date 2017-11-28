@@ -14,10 +14,11 @@ MY_DIR=$(dirname $me)
 
 export DRAKE_DIR=$SPARTAN_DIR/drake
 export DRAKE_BIN_DIR=$DRAKE_DIR/bazel-bin
+export IIWA_TOOLS_DIR=$(dirname $MY_DIR)
 
 cd $DRAKE_DIR
 
-export STARTUP_LOGFILE=$LOGFILE_BASE"."`date +'%H-%M-%S'`.version
+export STARTUP_LOGFILE=$LOGFILE_BASE"T"`date +'%H-%M-%S'`.version
 echo Starting robot $ROBOT_NAME at `date` >> $STARTUP_LOGFILE
 echo $SPARTAN_DIR : `git -C $SPARTAN_DIR rev-parse HEAD` >> $STARTUP_LOGFILE
 echo "remotes" >> $STARTUP_LOGFILE
@@ -31,10 +32,10 @@ git -C $DRAKE_DIR remote -vv >> $STARTUP_LOGFILE
 echo "branches" >> $STARTUP_LOGFILE
 git -C $DRAKE_DIR branch -vv >> $STARTUP_LOGFILE
 
-echo $MY_DIR : `git -C $MY_DIR rev-parse HEAD` >> $STARTUP_LOGFILE
+echo $IIWA_TOOLS_DIR : `git -C $IIWA_TOOLS_DIR rev-parse HEAD` >> $STARTUP_LOGFILE
 echo "remotes" >> $STARTUP_LOGFILE
-git -C $MY_DIR remote -vv >> $STARTUP_LOGFILE
+git -C $IIWA_TOOLS_DIR remote -vv >> $STARTUP_LOGFILE
 echo "branches" >> $STARTUP_LOGFILE
-git -C $MY_DIR branch -vv >> $STARTUP_LOGFILE
+git -C $IIWA_TOOLS_DIR branch -vv >> $STARTUP_LOGFILE
 
 $SPARTAN_INSTALL_DIR/bin/bot-procman-sheriff -l $MY_DIR/$PROCMAN_CONFIG

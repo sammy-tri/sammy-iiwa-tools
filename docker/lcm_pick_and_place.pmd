@@ -1,3 +1,8 @@
+cmd "0.record-camera" {
+    exec = "$IIWA_TOOLS_DIR/record_camera.py -o $LOGFILE_BASE -- -f v4l2 -video_size 1920x1080 -input_format h264 -i $CAMERA_DEVICE -c copy -timestamp now";
+    host= "localhost";
+}
+
 group "1.vision-drivers" {
     cmd "0.optitrack-driver" {
     	exec = "$DRAKE_BIN_DIR/external/optitrack_driver/src/optitrack_client";
@@ -83,6 +88,7 @@ script "start-drivers" {
     start cmd "1.iiwa_controller";
     start cmd "2.state-translator";
     start cmd "0.schunk-driver";
+    start cmd "0.record-camera";
 }
 
 script "stop-drivers-and-demo" {
@@ -91,4 +97,5 @@ script "stop-drivers-and-demo" {
     stop cmd "2.state-translator" wait "stopped";
     stop cmd "0.schunk-driver" wait "stopped";
     stop cmd "4.pick-and-place" wait "stopped";
+    stop cmd "0.record_camera" wait "stopped";
 }

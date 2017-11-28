@@ -21,6 +21,7 @@ optional_fields = [
     "container",
     "image",
     "task_index",
+    "camera_device",
 ]
 
 def load_robot_config(config_file):

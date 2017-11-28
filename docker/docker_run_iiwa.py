@@ -113,6 +113,9 @@ def main():
 
     cmd += " --privileged -v /dev/bus/usb:/dev/bus/usb " # allow usb access
 
+    if "camera_device" in robot_config:
+        cmd += " --group-add video "
+
     cmd += " --rm " # remove the image when you exit
 
     entrypoint = home_directory + "/iiwa-tools/docker/run_procman_docker.sh"

@@ -102,7 +102,8 @@ def main():
             cmd += " -e " + key.upper() + "=\"" + robot_config[key] + "\""
 
     cmd += " -e SPARTAN_DIR=" + home_directory + "/spartan"
-    cmd += " -e LOGFILE_BASE=" + home_directory + "/logs/" + robot_config["robot_name"] + datetime.date.today().isoformat()
+    cmd += " -e LOGFILE_BASE=" + home_directory + "/logs/" + robot_config["robot_name"]
+    cmd += " -e LCM_LOGFILE_BASE=" + home_directory + "/logs/" + robot_config["robot_name"] + datetime.date.today().isoformat()
     cmd += " -v " + robot_config["log_directory"] + ":" + home_directory + "/logs"
     # login as current user
     cmd += " --user %s " % user_name

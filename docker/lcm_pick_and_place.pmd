@@ -25,7 +25,7 @@ group "2.1.iiwa-drivers" {
         host = "localhost";
     }
     cmd "1.lcm-logger" {
-        exec = "lcm-logger -i --split-mb=512 $LOGFILE_BASE";
+        exec = "lcm-logger -i --split-mb=512 $LCM_LOGFILE_BASE";
         host = "localhost";
     }
 }

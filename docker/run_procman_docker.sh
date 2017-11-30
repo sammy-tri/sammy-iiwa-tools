@@ -18,7 +18,7 @@ export IIWA_TOOLS_DIR=$(dirname $MY_DIR)
 
 cd $DRAKE_DIR
 
-export STARTUP_LOGFILE=$LOGFILE_BASE"T"`date +'%H-%M-%S'`.version
+export STARTUP_LOGFILE=$LOGFILE_BASE`date +'%Y-%m-%dT%H-%M-%S'`.version
 echo Starting robot $ROBOT_NAME at `date` >> $STARTUP_LOGFILE
 echo $SPARTAN_DIR : `git -C $SPARTAN_DIR rev-parse HEAD` >> $STARTUP_LOGFILE
 echo "remotes" >> $STARTUP_LOGFILE

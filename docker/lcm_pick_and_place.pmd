@@ -97,5 +97,5 @@ script "stop-drivers-and-demo" {
     stop cmd "2.state-translator" wait "stopped";
     stop cmd "0.schunk-driver" wait "stopped";
     stop cmd "4.pick-and-place" wait "stopped";
-    stop cmd "0.record_camera" wait "stopped";
+    stop cmd "0.record-camera" wait "stopped";
 }

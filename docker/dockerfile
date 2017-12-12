@@ -22,6 +22,9 @@ RUN echo $USER_PASSWORD | sudo -S bash -c 'echo "'$USER_NAME' ALL=(ALL) NOPASSWD
 # Install some packages which are convenient for interactive shells
 RUN apt install iptables less vim ccache iproute2 tcpdump
 
+# Make recording video possible
+RUN apt install ffmpeg
+
 COPY spartan /home/$USER_NAME/spartan
 COPY iiwa-tools /home/$USER_NAME/iiwa-tools
 

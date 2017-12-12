@@ -8,5 +8,5 @@
     "log_directory": "/media/logs/octopus",
     "procman_config": "lcm_pick_and_place.pmd",
     "task_index": "1",
-    "camera_device": "/dev/video0"
+    "camera_device": "no_camera_configured"
 }

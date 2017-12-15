@@ -32,18 +32,18 @@ group "2.1.iiwa-drivers" {
 
 group "2.3.iiwa-sim" {
     cmd "0.kuka-sim" {
-        exec = "$DRAKE_BIN_DIR/drake/examples/kuka_iiwa_arm/dev/monolithic_pick_and_place/lcm_pick_and_place_simulator";
+        exec = "$DRAKE_BIN_DIR/examples/kuka_iiwa_arm/dev/pick_and_place/lcm_pick_and_place_simulator";
         host = "localhost";
     }
 }
 
 group "2.2.iiwa-plan-interface" {
     cmd "1.iiwa_controller" {
-        exec = "$DRAKE_BIN_DIR/drake/examples/kuka_iiwa_arm/iiwa_controller";
+        exec = "$DRAKE_BIN_DIR/examples/kuka_iiwa_arm/iiwa_controller";
         host = "localhost";
     }
     cmd "2.state-translator" {
-        exec = "directorPython $DRAKE_DIR/drake/examples/kuka_iiwa_arm/kuka_iiwa_state_translator.py --director_config $DRAKE_DIR/drake/examples/kuka_iiwa_arm/director_config.json";
+        exec = "directorPython $DRAKE_DIR/examples/kuka_iiwa_arm/kuka_iiwa_state_translator.py --director_config $DRAKE_DIR/drake/examples/kuka_iiwa_arm/director_config.json";
         host = "localhost";
     }
 }
@@ -56,7 +56,7 @@ group "3.schunk-driver" {
 }
 
 cmd "4.pick-and-place" {
-        exec = "$DRAKE_BIN_DIR/drake/examples/kuka_iiwa_arm/dev/monolithic_pick_and_place/lcm_pick_and_place_demo --task_index $TASK_INDEX --spdlog_level debug --nouse_channel_suffix";
+        exec = "$DRAKE_BIN_DIR/examples/kuka_iiwa_arm/dev/pick_and_place/lcm_pick_and_place_demo --task_index $TASK_INDEX --spdlog_level debug --nouse_channel_suffix";
         host = "localhost";
 }
 

@@ -118,6 +118,7 @@ def main():
         cmd += " --group-add video "
 
     cmd += " --rm " # remove the image when you exit
+    cmd += " --ulimit rtprio=30 " # Allow realtime scheduling
 
     entrypoint = home_directory + "/iiwa-tools/docker/run_procman_docker.sh"
     if args.entrypoint and args.entrypoint != "":

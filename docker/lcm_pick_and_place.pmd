@@ -25,7 +25,7 @@ group "2.3.iiwa-sim" {
 
 group "2.2.iiwa-plan-interface" {
     cmd "2.state-translator" {
-        exec = "directorPython $DRAKE_DIR/examples/kuka_iiwa_arm/kuka_iiwa_state_translator.py --director_config $DRAKE_DIR/drake/examples/kuka_iiwa_arm/director_config.json";
+        exec = "directorPython $DRAKE_DIR/examples/kuka_iiwa_arm/kuka_iiwa_state_translator.py --director_config $DRAKE_DIR/examples/kuka_iiwa_arm/director_config.json";
         host = "localhost";
     }
     cmd "1.iiwa_controller" {
@@ -79,7 +79,6 @@ script "start-drivers" {
     start group "2.1.iiwa-drivers";
     start cmd "0.optitrack-driver";
     start cmd "1.iiwa_controller";
-    start cmd "2.state-translator";
     start cmd "0.schunk-driver";
     start cmd "0.record-camera";
 }

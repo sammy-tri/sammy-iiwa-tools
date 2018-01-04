@@ -11,7 +11,7 @@ group "2.1.iiwa-drivers" {
         host = "localhost";
     }
     cmd "0.kuka-driver" {
-        exec = "chrt -r 30 kuka_driver --fri_port $IIWA_PORT";
+        exec = "chrt -r 30 $SPARTAN_BUILD_DIR/externals/drake-iiwa-driver/bazel-bin/kuka-driver/kuka_driver --fri_port $IIWA_PORT";
         host = "localhost";
     }
 }
@@ -61,7 +61,7 @@ cmd "6.director" {
     host = "localhost";
 }
 cmd "4.pick-and-place" {
-    exec = "$DRAKE_BIN_DIR/examples/kuka_iiwa_arm/dev/pick_and_place/lcm_pick_and_place_planner --task_index $TASK_INDEX --configuration_file drake/examples/kuka_iiwa_arm/dev/pick_and_place/configuration/dual_iiwa.pick_and_place_configuration --spdlog_level debug --nouse_channel_suffix";
+    exec = "$DRAKE_BIN_DIR/examples/kuka_iiwa_arm/dev/pick_and_place/lcm_pick_and_place_planner --task_index 0 --configuration_file $HOME/configuration/pick_and_place_configuration --spdlog_level debug --nouse_channel_suffix";
     host = "localhost";
 }
 cmd "0.record-camera" {

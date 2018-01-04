@@ -5,7 +5,13 @@ import datetime
 import getpass
 import json
 import os
+import string
+import shutil
 import sys
+import tempfile
+
+_THIS_FILE = os.path.abspath(__file__)
+_THIS_DIR = os.path.dirname(_THIS_FILE)\
 
 mandatory_fields = [
     "robot_name",
@@ -15,12 +21,13 @@ mandatory_fields = [
     "iiwa_port",
     "log_directory",
     "procman_config",
+    "iiwa_optitrack_id",
+    "target_optitrack_id",
 ]
 
 optional_fields = [
     "container",
     "image",
-    "task_index",
     "camera_device",
 ]
 
@@ -50,6 +57,47 @@ def load_robot_config(config_file):
         print ", ".join(unknown_configs)
 
     return robot_config
+
+
+def make_pick_and_place_config(target_dir, robot_config):
+    config_template = string.Template("""
+
+robot {
+  model_name: "iiwa"
+  optitrack_info {
+    id: $iiwa_optitrack_id
+  }
+  pose {
+    xyz: [0.0, 0.0, 0.7645]
+  }
+}
+
+object {
+  model_name: "big_robot_toy"
+  optitrack_info {
+    id: $target_optitrack_id
+  }
+  pose {
+    xyz: [0.8, -2.14, 0.75]
+  }
+}
+task {
+  end_effector_name: "iiwa_link_ee"
+  robot_index: 0
+  target_index: 0
+}
+""")
+
+    base_config = open(os.path.join(
+        _THIS_DIR, "pick_and_place_configuration_base")).read()
+
+    config = base_config + config_template.substitute(
+        iiwa_optitrack_id=robot_config['iiwa_optitrack_id'],
+        target_optitrack_id=robot_config['target_optitrack_id'])
+
+    with open(os.path.join(
+            target_dir, "pick_and_place_configuration"), "w") as f:
+        f.write(config)
 
 
 def main():
@@ -112,6 +160,11 @@ def main():
     cmd += " -p " + robot_config["gripper_remote_port"] + ":" + robot_config["gripper_remote_port"] + "/udp"
     cmd += " -p " + robot_config["gripper_local_port"] + ":" + robot_config["gripper_local_port"] + "/udp"
 
+    robot_config_dir = tempfile.mkdtemp(
+        prefix=robot_config["robot_name"] + "_config_")
+    make_pick_and_place_config(robot_config_dir, robot_config)
+    cmd += " -v " + robot_config_dir + ":" + home_directory + "/configuration"
+
     cmd += " --privileged -v /dev/bus/usb:/dev/bus/usb " # allow usb access
 
     if "camera_device" in robot_config:
@@ -129,6 +182,7 @@ def main():
     #cmd += " " + entrypoint
     cmd_endxhost = "xhost -local:root"
 
+
     print "command = \n \n", cmd, "\n", cmd_endxhost
     print ""
 
@@ -137,6 +191,7 @@ def main():
 	code = os.system(cmd)
 	print("Executed with code ", code)
 	os.system(cmd_endxhost)
+        shutil.rmtree(robot_config_dir)
 	# Squash return code to 0/1, as
 	# Docker's very large return codes
 	# were tricking Jenkins' failure
@@ -144,6 +199,7 @@ def main():
 	exit(code != 0)
     else:
 	print "dry run, not executing command"
+        print "robot config in " + robot_config_dir
 	exit(0)
 
 if __name__=="__main__":

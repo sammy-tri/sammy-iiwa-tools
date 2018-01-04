@@ -7,6 +7,7 @@
     "container": "iiwa_squid",
     "log_directory": "/media/logs/squid",
     "procman_config": "lcm_pick_and_place.pmd",
-    "task_index": "0",
-    "camera_device": "/dev/video0"
+    "iiwa_optitrack_id": "1",
+    "target_optitrack_id": "7",
+    "camera_device": "no_camera_configured"
 }

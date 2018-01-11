@@ -1,0 +1,87 @@
+group "3.schunk-driver" {
+    cmd "0.schunk-driver" {
+        exec = "$SPARTAN_BUILD_DIR/externals/drake-schunk-driver/bazel-bin/src/schunk_driver --gripper_addr $GRIPPER_ADDRESS --gripper_port $GRIPPER_REMOTE_PORT --local_port $GRIPPER_LOCAL_PORT";
+        host = "localhost";
+    }
+}
+
+group "2.1.iiwa-drivers" {
+    cmd "1.lcm-logger" {
+        exec = "lcm-logger -i --split-mb=512 $LCM_LOGFILE_BASE";
+        host = "localhost";
+    }
+    cmd "0.kuka-driver" {
+        exec = "chrt -r 30 $SPARTAN_BUILD_DIR/externals/drake-iiwa-driver/bazel-bin/kuka-driver/kuka_driver --fri_port $IIWA_PORT";
+        host = "localhost";
+    }
+}
+
+group "2.2.iiwa-plan-interface" {
+    cmd "2.state-translator" {
+        exec = "directorPython $DRAKE_DIR/examples/kuka_iiwa_arm/kuka_iiwa_state_translator.py --director_config $DRAKE_DIR/examples/kuka_iiwa_arm/director_config.json";
+        host = "localhost";
+    }
+}
+
+group "1.vision-drivers" {
+    cmd "0.optitrack-driver" {
+        exec = "$DRAKE_BIN_DIR/external/optitrack_driver/src/optitrack_client";
+        host = "localhost";
+    }
+    cmd "2.openni-driver" {
+        exec = "openni2-camera-lcm";
+        host = "localhost";
+    }
+    cmd "3.rgbd-viewer" {
+        exec = "directorPython -m director.imageviewapp --bot-config $SPARTAN_SOURCE_DIR/apps/iiwa/iiwaManip.cfg --channel OPENNI_FRAME --rgbd --pointcloud";
+        host = "localhost";
+    }
+}
+cmd "5.drake-visualizer" {
+    exec = "drake-visualizer --script $DRAKE_DIR/multibody/rigid_body_plant/visualization/show_frames.py";
+    host = "localhost";
+}
+cmd "7.lcm-spy" {
+    exec = "drake-lcm-spy";
+    host = "localhost";
+}
+cmd "6.director" {
+    exec = "kuka_iiwa_app";
+    host = "localhost";
+}
+cmd "4.1.clutter-clearing" {
+    exec = "$HOME/rand_obj_picking/build/clutter_clearing2";
+    host = "localhost";
+}
+
+cmd "4.2.cup-flip" {
+    exec = "$HOME/rand_obj_picking/build/test_cup_flip";
+    host = "localhost";
+}
+
+cmd "0.record-camera" {
+    exec = "$IIWA_TOOLS_DIR/record_camera.py -o $LOGFILE_BASE -- -f v4l2 -video_size 1920x1080 -input_format h264 -i $CAMERA_DEVICE -c copy -timestamp now";
+    host = "localhost";
+}
+cmd "8.signal-scope" {
+    exec = "signal-scope $SPARTAN_SOURCE_DIR/config/iiwa/kuka_iiwa_signal_scope.py";
+    host = "localhost";
+}
+
+script "start-drivers" {
+    stop cmd "4.1.clutter-clearing" wait "stopped";
+    stop cmd "4.2.cup-flip" wait "stopped";
+    start group "2.1.iiwa-drivers";
+    start cmd "2.state-translator";
+    start cmd "0.schunk-driver";
+    start cmd "0.record-camera";
+}
+
+script "stop-drivers-and-demo" {
+    stop group "2.1.iiwa-drivers" wait "stopped";
+    stop cmd "2.state-translator" wait "stopped";
+    stop cmd "0.schunk-driver" wait "stopped";
+    stop cmd "4.1.clutter-clearing" wait "stopped";
+    stop cmd "4.2.cup-flip" wait "stopped";
+    stop cmd "0.record-camera" wait "stopped";
+}

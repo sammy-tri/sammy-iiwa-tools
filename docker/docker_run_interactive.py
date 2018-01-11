@@ -21,8 +21,12 @@ if __name__=="__main__":
 
     parser.add_argument("-e", "--entrypoint", type=str, default="",
                         help="(optional) thing to run in container")
+    parser.add_argument("-u", "--user", type=str, default=user_name,
+                        help="Username to run as inside container")
 
     args = parser.parse_args()
+    user_name = args.user
+
     print "running docker container derived from image %s" %args.image
 
     image_name = args.image

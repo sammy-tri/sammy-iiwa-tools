@@ -52,16 +52,20 @@ def main():
     parser.add_argument("-p", "--password", type=str,
                     help="(optional) password for the user", default="password")
 
-    parser.add_argument('-u','--user_id', type=int,
+    parser.add_argument('-U','--user_id', type=int,
                         help="(optional) user id for this user",
                         default=os.getuid())
-    parser.add_argument('-g','--group_id', type=int,
+    parser.add_argument('-G','--group_id', type=int,
                         help="(optional) user gid for this user",
                         default=os.getgid())
     parser.add_argument('-s', '--spartan',
                         help="Path to the spartan source to include in the image")
+    parser.add_argument("-u", "--user", type=str, default=user_name,
+                        help="Username to run as inside container")
 
     args = parser.parse_args()
+    user_name = args.user
+
     if not args.spartan:
         print "Use --spartan to specify the spartan source directory to include"
         sys.exit(1)

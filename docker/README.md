@@ -50,7 +50,7 @@ be within the container.
 Next, build spartan.  If you're updating an existing image, this is a
 convenient time to update the drake/spartan source.
 
-    rm -rf build && mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER_LAUNCHER=/usr/bin/ccache -DCMAKE_CXX_COMPILER_LAUNCHER=/usr/bin/ccache -DWITH_IIWA_DRIVER_TRI=ON -DWITH_PERCEPTION=ON -DWITH_SCHUNK_DRIVER=ON -DWITH_SNOPT=ON
+    rm -rf build && mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER_LAUNCHER=/usr/bin/ccache -DCMAKE_CXX_COMPILER_LAUNCHER=/usr/bin/ccache -DWITH_IIWA_DRIVER_TRI=ON -DWITH_PERCEPTION=ON -DWITH_SCHUNK_DRIVER=ON -DWITH_SNOPT=ON -DWITH_ROS=OFF
     make -j
 
 Once the build is complete, exit the shell (terminating the

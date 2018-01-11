@@ -11,7 +11,7 @@ import sys
 import tempfile
 
 _THIS_FILE = os.path.abspath(__file__)
-_THIS_DIR = os.path.dirname(_THIS_FILE)\
+_THIS_DIR = os.path.dirname(_THIS_FILE)
 
 mandatory_fields = [
     "robot_name",
@@ -115,8 +115,11 @@ def main():
                         help="(optional) thing to run in container")
     parser.add_argument("-C", "--config", type=str, required=True,
                         help="Robot configuration file")
+    parser.add_argument("-u", "--user", type=str, default=user_name,
+                        help="Username to run as inside container")
 
     args = parser.parse_args()
+    user_name = args.user
 
     robot_config = load_robot_config(args.config)
     image_name = default_image_name

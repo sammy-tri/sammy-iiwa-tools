@@ -1,6 +1,6 @@
 {
     "robot_name": "nautilus",
-    "gripper_address": "192.168.1.23",
+    "gripper_address": "192.168.1.21",
     "gripper_remote_port": "1600",
     "gripper_local_port": "1601",
     "iiwa_port": "30201",

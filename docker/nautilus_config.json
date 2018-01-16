@@ -9,5 +9,5 @@
     "procman_config": "rand_obj_picking.pmd",
     "iiwa_optitrack_id": "22",
     "target_optitrack_id": "21",
-    "camera_device": "/dev/video0"
+    "camera_device": "/dev/video2"
 }

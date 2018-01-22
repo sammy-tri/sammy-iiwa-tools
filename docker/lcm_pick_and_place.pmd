@@ -1,6 +1,6 @@
 group "3.schunk-driver" {
     cmd "0.schunk-driver" {
-        exec = "$SPARTAN_BUILD_DIR/externals/drake-schunk-driver/bazel-bin/src/schunk_driver --gripper_addr $GRIPPER_ADDRESS --gripper_port $GRIPPER_REMOTE_PORT --local_port $GRIPPER_LOCAL_PORT";
+        exec = "$SCHUNK_DRIVER_DIR/bazel-bin/src/schunk_driver --gripper_addr $GRIPPER_ADDRESS --gripper_port $GRIPPER_REMOTE_PORT --local_port $GRIPPER_LOCAL_PORT";
         host = "localhost";
     }
 }
@@ -11,7 +11,7 @@ group "2.1.iiwa-drivers" {
         host = "localhost";
     }
     cmd "0.kuka-driver" {
-        exec = "chrt -r 30 $SPARTAN_BUILD_DIR/externals/drake-iiwa-driver/bazel-bin/kuka-driver/kuka_driver --fri_port $IIWA_PORT";
+        exec = "chrt -r 30 $IIWA_DRIVER_DIR/bazel-bin/kuka-driver/kuka_driver --fri_port $IIWA_PORT";
         host = "localhost";
     }
 }
@@ -57,7 +57,7 @@ cmd "7.lcm-spy" {
     host = "localhost";
 }
 cmd "6.director" {
-    exec = "kuka_iiwa_app";
+    exec = "$IIWA_TOOLS_DIR/runiiwamanip.sh";
     host = "localhost";
 }
 cmd "4.pick-and-place" {

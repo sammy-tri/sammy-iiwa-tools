@@ -9,7 +9,14 @@ Creating an image from scratch is done by running
 `docker_build_base.py`.  You'll need to specify a spartan source
 directory to import into the image.
 
-Example: `docker_build_base.py -s ~/spartan -i my-image-name`
+These specify a version of spartan living in
+https://github.com/sammy-tri/spartan/tree/no_ros_prereqs which
+splits the prereq install not to include ROS deps.
+
+`git clone https://github.com/sammy-tri/spartan.git`
+`git checkout fda56e4fc4beddb0cad6fb477fe07b2e15decaec`
+
+Example: `docker_build_base.py -s ~/spartan -i my-image-name -u robot-lab`
 
 The resulting image will exclude any directories named `build`.
 
@@ -35,7 +42,7 @@ The base image contains the source code, but does not compile anything
 and thus require ssh keys).  To run a container with an interative
 shell, run `docker_run_interactive.py`.
 
-Example: `docker_run_interactive.py -i my-image-name`
+Example: `docker_run_interactive.py -i my-image-name -u robot-lab`
 
 The container will not be removed after it is stopped.
 
@@ -50,8 +57,13 @@ be within the container.
 Next, build spartan.  If you're updating an existing image, this is a
 convenient time to update the drake/spartan source.
 
-    rm -rf build && mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER_LAUNCHER=/usr/bin/ccache -DCMAKE_CXX_COMPILER_LAUNCHER=/usr/bin/ccache -DWITH_IIWA_DRIVER_TRI=ON -DWITH_PERCEPTION=ON -DWITH_SCHUNK_DRIVER=ON -DWITH_SNOPT=ON -DWITH_ROS=OFF
+    rm -rf build && mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER_LAUNCHER=/usr/bin/ccache -DCMAKE_CXX_COMPILER_LAUNCHER=/usr/bin/ccache -DWITH_IIWA_DRIVER_TRI=OFF -DWITH_PERCEPTION=ON -DWITH_SCHUNK_DRIVER=OFF -DWITH_SNOPT=ON -DWITH_ROS=OFF -DWITH_IIWA_DRIVER_RLG=OFF
     make -j
+
+Next, checkout (into the docker user's home directory) and build
+https://github.com/RobotLocomotion/drake-iiwa-driver and
+https://github.com/RobotLocomotion/drake-schunk-driver using `bazel`
+according to their instructions.
 
 Once the build is complete, exit the shell (terminating the
 container), and create a new image/tag from the container.
@@ -64,4 +76,4 @@ The script `docker_run_iiwa.py` will start up a temporary container
 configured for a particular robot.  `sample_config.json` has a minimal
 configuration.
 
-Example: `docker_run_iiwa.py -C sample_config.json -i my-image-name:compiled`
+Example: `docker_run_iiwa.py -C sample_config.json -i my-image-name:compiled -u robot-lab`

@@ -61,8 +61,10 @@ convenient time to update the drake/spartan source.
     make -j
 
 Next, checkout (into the docker user's home directory) and build
-https://github.com/RobotLocomotion/drake-iiwa-driver and
-https://github.com/RobotLocomotion/drake-schunk-driver using `bazel`
+https://github.com/RobotLocomotion/drake-iiwa-driver,
+https://github.com/RobotLocomotion/drake-schunk-driver, and
+https://github.com/RobotLocomotion/optitrack-driver
+using `bazel`
 according to their instructions.
 
 Once the build is complete, exit the shell (terminating the

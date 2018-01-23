@@ -17,13 +17,14 @@ export DRAKE_BIN_DIR=$DRAKE_DIR/bazel-bin
 export IIWA_TOOLS_DIR=$(dirname $MY_DIR)
 export IIWA_DRIVER_DIR=$HOME/drake-iiwa-driver
 export SCHUNK_DRIVER_DIR=$HOME/drake-schunk-driver
+export OPTITRACK_DRIVER_DIR=$HOME/optitrack-driver
 
 cd $DRAKE_DIR
 
 export STARTUP_LOGFILE=$LOGFILE_BASE`date +'%Y-%m-%dT%H-%M-%S'`.version
 echo Starting robot $ROBOT_NAME at `date` >> $STARTUP_LOGFILE
 
-for PROG_DIR in $SPARTAN_DIR $DRAKE_DIR $IIWA_TOOLS_DIR $IIWA_DRIVER_DIR $SCHUNK_DRIVER_DIR; do
+for PROG_DIR in $SPARTAN_DIR $DRAKE_DIR $IIWA_TOOLS_DIR $IIWA_DRIVER_DIR $SCHUNK_DRIVER_DIR $OPTITRACK_DRIVER_DIR; do
     echo $PROG_DIR : `git -C $PROG_DIR rev-parse HEAD` >> $STARTUP_LOGFILE
     echo "remotes" >> $STARTUP_LOGFILE
     git -C $PROG_DIR remote -vv >> $STARTUP_LOGFILE

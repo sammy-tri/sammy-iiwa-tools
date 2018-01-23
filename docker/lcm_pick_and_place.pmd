@@ -29,14 +29,14 @@ group "2.2.iiwa-plan-interface" {
         host = "localhost";
     }
     cmd "1.iiwa_controller" {
-        exec = "chrt -r 20 $DRAKE_BIN_DIR/examples/kuka_iiwa_arm/iiwa_controller";
+        exec = "chrt -r 20 $DRAKE_BIN_DIR/examples/kuka_iiwa_arm/kuka_plan_runner";
         host = "localhost";
     }
 }
 
 group "1.vision-drivers" {
     cmd "0.optitrack-driver" {
-        exec = "$DRAKE_BIN_DIR/external/optitrack_driver/src/optitrack_client";
+        exec = "$OPTITRACK_DRIVER_DIR/bazel-bin/src/optitrack_client";
         host = "localhost";
     }
     cmd "2.openni-driver" {

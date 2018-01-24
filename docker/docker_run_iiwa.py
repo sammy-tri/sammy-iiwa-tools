@@ -29,6 +29,7 @@ optional_fields = [
     "container",
     "image",
     "camera_device",
+    "anzu_resource_root",
 ]
 
 def load_robot_config(config_file):

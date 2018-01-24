@@ -46,15 +46,11 @@ cmd "7.lcm-spy" {
     host = "localhost";
 }
 cmd "4.1.clutter-clearing" {
-    exec = "$HOME/rand_obj_picking/build/clutter_clearing2";
+    exec = "$HOME/enabling-anzu/bazel-bin/rand_obj_picking/apps/clutter_clearing2";
     host = "localhost";
 }
 cmd "5.drake-visualizer" {
     exec = "drake-visualizer --script $DRAKE_DIR/multibody/rigid_body_plant/visualization/show_frames.py";
-    host = "localhost";
-}
-cmd "4.2.cup-flip" {
-    exec = "$HOME/rand_obj_picking/build/test_cup_flip";
     host = "localhost";
 }
 cmd "0.record-camera" {
@@ -64,7 +60,6 @@ cmd "0.record-camera" {
 
 script "start-drivers" {
     stop cmd "4.1.clutter-clearing" wait "stopped";
-    stop cmd "4.2.cup-flip" wait "stopped";
     start group "2.1.iiwa-drivers";
     start cmd "2.state-translator";
     start cmd "0.schunk-driver";
@@ -76,6 +71,5 @@ script "stop-drivers-and-demo" {
     stop cmd "2.state-translator" wait "stopped";
     stop cmd "0.schunk-driver" wait "stopped";
     stop cmd "4.1.clutter-clearing" wait "stopped";
-    stop cmd "4.2.cup-flip" wait "stopped";
     stop cmd "0.record-camera" wait "stopped";
 }

@@ -5,7 +5,7 @@
     "gripper_local_port": "1601",
     "iiwa_port": "30201",
     "container": "iiwa_nautilus",
-    "log_directory": "/home/user/logs/nautilus",
+    "log_directory": "/home/robot-lab/logs/nautilus",
     "procman_config": "rand_obj_picking.pmd",
     "iiwa_optitrack_id": "22",
     "target_optitrack_id": "21",

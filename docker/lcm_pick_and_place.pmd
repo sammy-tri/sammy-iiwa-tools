@@ -29,7 +29,7 @@ group "2.2.iiwa-plan-interface" {
         host = "localhost";
     }
     cmd "1.iiwa_controller" {
-        exec = "chrt -r 20 $DRAKE_BIN_DIR/examples/kuka_iiwa_arm/kuka_plan_runner";
+        exec = "chrt -r 20 $DRAKE_BIN_DIR/examples/kuka_iiwa_arm/iiwa_controller";
         host = "localhost";
     }
 }

@@ -4,6 +4,8 @@
     "gripper_remote_port": "1600",
     "gripper_local_port": "1601",
     "iiwa_port": "30201",
+    "iiwa_local_interface": "enp82s0",
+    "iiwa_local_ip": "192.170.11.200",
     "container": "iiwa_nautilus",
     "log_directory": "/media/logs/nautilus",
     "procman_config": "rand_obj_picking.pmd",

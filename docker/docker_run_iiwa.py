@@ -7,6 +7,7 @@ import json
 import os
 import string
 import shutil
+import subprocess
 import sys
 import tempfile
 
@@ -19,6 +20,8 @@ mandatory_fields = [
     "gripper_local_port",
     "gripper_remote_port",
     "iiwa_port",
+    "iiwa_local_interface",
+    "iiwa_local_ip",
     "log_directory",
     "procman_config",
     "iiwa_optitrack_id",
@@ -101,6 +104,43 @@ task {
         f.write(config)
 
 
+def configure_iiwa_network(robot_config, container_name, dry_run):
+    # First check that the ip doesn't already exist.
+    try:
+        ip_addr_out = subprocess.check_output(
+            ["ip", "addr", "show", "dev", robot_config["iiwa_local_interface"]])
+    except subprocess.CalledProcessError as e:
+        print "Checking existing configuration failed: " + e.output
+        raise e
+
+    for line in ip_addr_out.split('\n'):
+        if " inet " in line:
+            raise RuntimeError("iiwa_local_interface " +
+                               robot_config["iiwa_local_interface"] +
+                               "has an address configured, aborting")
+
+    network_name = "iiwa_" + robot_config["iiwa_local_interface"]
+    if dry_run:
+        print "Skipping docker network creation for " + network_name
+        return
+
+
+    docker_nets = subprocess.check_output(["docker", "network", "ls"])
+    if network_name in docker_nets:
+        subprocess.check_call(["docker", "network", "rm", network_name])
+
+    iiwa_subnet = ".".join(robot_config["iiwa_local_ip"].split(".")[0:3] + ["0/24"])
+    subprocess.check_call(["docker", "network", "create",
+                           "-d", "macvlan",
+                           "--subnet", iiwa_subnet,
+                           "-o", "parent=" + robot_config["iiwa_local_interface"],
+                           network_name])
+    subprocess.check_call(["docker", "network", "connect",
+                           "--ip", robot_config["iiwa_local_ip"],
+                           network_name, container_name])
+    return network_name
+
+
 def main():
     user_name = getpass.getuser()
     default_image_name = user_name + '-spartan-iiwa'
@@ -129,7 +169,7 @@ def main():
     if args.image and len(args.image):
         image_name = args.image
 
-    container_name = image_name + "-" + robot_config["robot_name"]
+    container_name = image_name + "_" + robot_config["robot_name"]
     if "container" in robot_config:
         container_name = robot_config["container"]
     if args.container and len(args.container):
@@ -144,7 +184,7 @@ def main():
     home_directory = '/home/' + user_name
 
     cmd = "xhost +local:root \n"
-    cmd += "nvidia-docker run --name " + container_name
+    cmd += "nvidia-docker create --name " + container_name
     cmd += " -e DISPLAY -e QT_X11_NO_MITSHM=1 -v /tmp/.X11-unix:/tmp/.X11-unix:rw "     # enable graphics
 
     # TODO(sam.creasey) Using os.system here is begging for problems
@@ -160,7 +200,6 @@ def main():
     # login as current user
     cmd += " --user %s " % user_name
 
-    cmd += " -p " + robot_config["iiwa_port"] + ":" + robot_config["iiwa_port"] + "/udp"
     cmd += " -p " + robot_config["gripper_remote_port"] + ":" + robot_config["gripper_remote_port"] + "/udp"
     cmd += " -p " + robot_config["gripper_local_port"] + ":" + robot_config["gripper_local_port"] + "/udp"
 
@@ -174,14 +213,12 @@ def main():
     if "camera_device" in robot_config:
         cmd += " --group-add video "
 
-    cmd += " --rm " # remove the image when you exit
     cmd += " --ulimit rtprio=30 " # Allow realtime scheduling
 
     entrypoint = home_directory + "/iiwa-tools/docker/run_procman_docker.sh"
     if args.entrypoint and args.entrypoint != "":
         entrypoint = args.entrypoint
     cmd += "--entrypoint=" + entrypoint
-    cmd += " -it"
     cmd += " " + image_name
     #cmd += " " + entrypoint
     cmd_endxhost = "xhost -local:root"
@@ -193,8 +230,14 @@ def main():
     if not args.dry_run:
 	print "executing shell command"
 	code = os.system(cmd)
-	print("Executed with code ", code)
-	os.system(cmd_endxhost)
+	print("Creating container exited with code ", code)
+        if code != 0:
+            raise RuntimeError("Failed to create container")
+        network_name = configure_iiwa_network(robot_config, container_name, args.dry_run)
+        code = subprocess.call(["nvidia-docker", "start", "-ai", container_name])
+        subprocess.check_call(["docker", "rm", container_name])
+        subprocess.check_call(["docker", "network", "rm", network_name])
+        os.system(cmd_endxhost)
         shutil.rmtree(robot_config_dir)
 	# Squash return code to 0/1, as
 	# Docker's very large return codes
@@ -204,6 +247,7 @@ def main():
     else:
 	print "dry run, not executing command"
         print "robot config in " + robot_config_dir
+        configure_iiwa_network(robot_config, container_name, args.dry_run)
 	exit(0)
 
 if __name__=="__main__":

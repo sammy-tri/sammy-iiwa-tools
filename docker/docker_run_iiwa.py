@@ -104,41 +104,74 @@ task {
         f.write(config)
 
 
-def configure_iiwa_network(robot_config, container_name, dry_run):
-    # First check that the ip doesn't already exist.
-    try:
-        ip_addr_out = subprocess.check_output(
-            ["ip", "addr", "show", "dev", robot_config["iiwa_local_interface"]])
-    except subprocess.CalledProcessError as e:
-        print "Checking existing configuration failed: " + e.output
-        raise e
+# Do terrible things to the system's network configuration.  We do try
+# to restore the state on our way out, which I suppose is something.
+class NetworkConfigMangler(object):
+    def __init__(self, robot_config, container_name, dry_run):
+        self.robot_config = robot_config
+        self.container_name = container_name
+        self.dry_run = dry_run
+        self.if_was_up = False
+        self.network_name = None
 
-    for line in ip_addr_out.split('\n'):
-        if " inet " in line:
-            raise RuntimeError("iiwa_local_interface " +
-                               robot_config["iiwa_local_interface"] +
-                               "has an address configured, aborting")
+    def configure_iiwa_network(self):
+        robot_config = self.robot_config
 
-    network_name = "iiwa_" + robot_config["iiwa_local_interface"]
-    if dry_run:
-        print "Skipping docker network creation for " + network_name
-        return
+        # First check that the ip doesn't already exist.
+        try:
+            ip_addr_out = subprocess.check_output(
+                ["nmcli", "device", "show", robot_config["iiwa_local_interface"]])
+        except subprocess.CalledProcessError as e:
+            print "Checking existing configuration failed: " + e.output
+            raise e
+
+        addresses_found = []
+        for line in ip_addr_out.split('\n'):
+            if line.startswith("IP4.ADDRESS"):
+                addresses_found.append(line.split(':')[1].strip())
+
+        if len(addresses_found) == 0:
+            self.if_was_up = False
+        else:
+            for addr in addresses_found:
+                if addr.split("/")[0] != robot_config["iiwa_local_ip"]:
+                    raise RuntimeError("iiwa_local_interface " +
+                                       robot_config["iiwa_local_interface"] +
+                                       "has an unexpected address configured, " +
+                                       "aborting")
+            self.if_was_up = True
+
+        if self.if_was_up:
+            subprocess.check_call(["nmcli", "device", "disconnect",
+                                   robot_config["iiwa_local_interface"]])
+
+        network_name = "iiwa_" + robot_config["iiwa_local_interface"]
+        if self.dry_run:
+            print "Skipping docker network creation for " + network_name
+            return
 
 
-    docker_nets = subprocess.check_output(["docker", "network", "ls"])
-    if network_name in docker_nets:
+        docker_nets = subprocess.check_output(["docker", "network", "ls"])
+        if network_name in docker_nets:
+            subprocess.check_call(["docker", "network", "rm", network_name])
+
+        iiwa_subnet = ".".join(robot_config["iiwa_local_ip"].split(".")[0:3] + ["0/24"])
+        subprocess.check_call(["docker", "network", "create",
+                               "-d", "macvlan",
+                               "--subnet", iiwa_subnet,
+                               "-o", "parent=" + robot_config["iiwa_local_interface"],
+                               network_name])
+        subprocess.check_call(["docker", "network", "connect",
+                               "--ip", robot_config["iiwa_local_ip"],
+                               network_name, self.container_name])
+        self.network_name = network_name
+
+
+    def restore_configuration(self):
         subprocess.check_call(["docker", "network", "rm", network_name])
-
-    iiwa_subnet = ".".join(robot_config["iiwa_local_ip"].split(".")[0:3] + ["0/24"])
-    subprocess.check_call(["docker", "network", "create",
-                           "-d", "macvlan",
-                           "--subnet", iiwa_subnet,
-                           "-o", "parent=" + robot_config["iiwa_local_interface"],
-                           network_name])
-    subprocess.check_call(["docker", "network", "connect",
-                           "--ip", robot_config["iiwa_local_ip"],
-                           network_name, container_name])
-    return network_name
+        if self.if_was_up:
+            subprocess.check_call(["nmcli", "device", "connect",
+                                   self.robot_config["iiwa_local_interface"]])
 
 
 def main():
@@ -227,16 +260,18 @@ def main():
     print "command = \n \n", cmd, "\n", cmd_endxhost
     print ""
 
+    net_config = NetworkConfigMangler(robot_config, container_name, args.dry_run)
+
     if not args.dry_run:
 	print "executing shell command"
 	code = os.system(cmd)
 	print("Creating container exited with code ", code)
         if code != 0:
             raise RuntimeError("Failed to create container")
-        network_name = configure_iiwa_network(robot_config, container_name, args.dry_run)
+        net_config.configure_iiwa_network()
         code = subprocess.call(["nvidia-docker", "start", "-ai", container_name])
         subprocess.check_call(["docker", "rm", container_name])
-        subprocess.check_call(["docker", "network", "rm", network_name])
+        net_config.restore_configuration()
         os.system(cmd_endxhost)
         shutil.rmtree(robot_config_dir)
 	# Squash return code to 0/1, as
@@ -247,7 +282,7 @@ def main():
     else:
 	print "dry run, not executing command"
         print "robot config in " + robot_config_dir
-        configure_iiwa_network(robot_config, container_name, args.dry_run)
+        net_config.configure_iiwa_network()
 	exit(0)
 
 if __name__=="__main__":

@@ -7,6 +7,10 @@ group "2.1.iiwa-drivers" {
         exec = "lcm-logger -c DRAKE_POINTCLOUD.* -v -i --split-mb=512 $LCM_LOGFILE_BASE";
         host = "localhost";
     }
+    cmd "2.ping-iiwa-to-update-arp-cache" {
+        exec = "ping -c 5 $IIWA_KONI_IP";
+	host = "localhost";
+    }
 }
 
 group "3.schunk-driver" {

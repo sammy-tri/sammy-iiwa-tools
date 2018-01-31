@@ -21,7 +21,7 @@ RUN echo $USER_PASSWORD | sudo -S bash -c 'echo "'$USER_NAME' ALL=(ALL) NOPASSWD
 
 # Install some packages which are convenient for interactive shells
 RUN apt update
-RUN apt install -y iptables less vim ccache iproute2 tcpdump git
+RUN apt install -y iptables less vim ccache iproute2 tcpdump git iputils-ping ffmpeg
 
 COPY spartan /home/$USER_NAME/spartan
 COPY iiwa-tools /home/$USER_NAME/iiwa-tools
@@ -31,9 +31,6 @@ RUN git -C spartan submodule update drake director signal-scope
 RUN yes "Y" | /home/$USER_NAME/spartan/setup/docker/install_dependencies.sh
 RUN yes "Y" | /home/$USER_NAME/spartan/setup/ubuntu/16.04/install_prereqs_base.sh
 RUN yes "Y" | /home/$USER_NAME/spartan/drake/setup/ubuntu/16.04/install_prereqs.sh
-
-# Make recording video possible
-RUN apt install -y ffmpeg
 
 RUN chown $USER_ID:$USER_GID -R /home/$USER_NAME
 

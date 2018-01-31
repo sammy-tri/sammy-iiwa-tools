@@ -22,6 +22,7 @@ mandatory_fields = [
     "iiwa_port",
     "iiwa_local_interface",
     "iiwa_local_ip",
+    "iiwa_koni_ip",
     "log_directory",
     "procman_config",
     "iiwa_optitrack_id",
@@ -168,7 +169,7 @@ class NetworkConfigMangler(object):
 
 
     def restore_configuration(self):
-        subprocess.check_call(["docker", "network", "rm", network_name])
+        subprocess.check_call(["docker", "network", "rm", self.network_name])
         if self.if_was_up:
             subprocess.check_call(["nmcli", "device", "connect",
                                    self.robot_config["iiwa_local_interface"]])

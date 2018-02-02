@@ -3,7 +3,7 @@
     "gripper_address": "192.168.1.23",
     "gripper_remote_port": "1800",
     "gripper_local_port": "1801",
-    "grasp_frame_translational_offset": "16.5",
+    "grasp_frame_translational_offset": "0.165",
     "iiwa_port": "30201",
     "iiwa_local_interface": "ens5f1",
     "iiwa_local_ip": "192.170.11.200",
@@ -12,6 +12,6 @@
     "log_directory": "/media/logs/cuttlefish",
     "procman_config": "lcm_pick_and_place.pmd",
     "iiwa_optitrack_id": "22",
-    "target_optitrack_id": "21",
+    "target_optitrack_id": "7",
     "camera_device": "/dev/video0"
 }

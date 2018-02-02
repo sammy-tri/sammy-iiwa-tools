@@ -34,6 +34,8 @@ optional_fields = [
     "image",
     "camera_device",
     "anzu_resource_root",
+    "grip_force",
+    "grasp_frame_translational_offset",
 ]
 
 def load_robot_config(config_file):
@@ -90,15 +92,24 @@ task {
   end_effector_name: "iiwa_link_ee"
   robot_index: 0
   target_index: 0
+  $extra_task_config
 }
 """)
+
+    extra_task_config = ""
+    if "grip_force" in robot_config:
+        extra_task_config += "grip_force: " + robot_config["grip_force"] + "\n"
+    if "grasp_frame_translational_offset" in robot_config:
+        extra_task_config += "grasp_frame_translational_offset: " + \
+                             robot_config["grasp_frame_translational_offset"] + "\n"
 
     base_config = open(os.path.join(
         _THIS_DIR, "pick_and_place_configuration_base")).read()
 
     config = base_config + config_template.substitute(
         iiwa_optitrack_id=robot_config['iiwa_optitrack_id'],
-        target_optitrack_id=robot_config['target_optitrack_id'])
+        target_optitrack_id=robot_config['target_optitrack_id'],
+        extra_task_config=extra_task_config)
 
     with open(os.path.join(
             target_dir, "pick_and_place_configuration"), "w") as f:

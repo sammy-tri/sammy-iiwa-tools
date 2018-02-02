@@ -14,6 +14,10 @@ group "2.1.iiwa-drivers" {
         exec = "chrt -r 30 $IIWA_DRIVER_DIR/bazel-bin/kuka-driver/kuka_driver --fri_port $IIWA_PORT";
         host = "localhost";
     }
+    cmd "2.ping-iiwa-to-update-arp-cache" {
+        exec = "ping -c 5 $IIWA_KONI_IP";
+	host = "localhost";
+    }
 }
 
 group "2.3.iiwa-sim" {

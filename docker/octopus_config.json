@@ -1,12 +1,16 @@
 {
     "robot_name": "octopus",
-    "gripper_address": "192.168.1.23",
-    "gripper_remote_port": "1800",
-    "gripper_local_port": "1801",
-    "iiwa_port": "30201",
+    "gripper_address": "192.168.1.29",
+    "gripper_remote_port": "1900",
+    "gripper_local_port": "1901",
+    "iiwa_port": "30200",
+    "iiwa_local_interface": "ens5f0",
+    "iiwa_local_ip": "192.170.10.200",
+    "iiwa_koni_ip": "192.170.10.2",
     "container": "iiwa_octopus",
     "log_directory": "/media/logs/octopus",
     "procman_config": "lcm_pick_and_place.pmd",
-    "task_index": "1",
+    "iiwa_optitrack_id": "1",
+    "target_optitrack_id": "5",
     "camera_device": "no_camera_configured"
 }

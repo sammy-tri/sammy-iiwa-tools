@@ -250,6 +250,9 @@ def main():
 
     robot_config_dir = tempfile.mkdtemp(
         prefix=robot_config["robot_name"] + "_config_")
+    # The docker user might not be the same uid as the user invoking
+    # this script.
+    os.chmod(robot_config_dir, 755)
     make_pick_and_place_config(robot_config_dir, robot_config)
     cmd += " -v " + robot_config_dir + ":" + home_directory + "/configuration"
 

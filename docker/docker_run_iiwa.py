@@ -252,7 +252,7 @@ def main():
         prefix=robot_config["robot_name"] + "_config_")
     # The docker user might not be the same uid as the user invoking
     # this script.
-    os.chmod(robot_config_dir, 755)
+    os.chmod(robot_config_dir, 0755)
     make_pick_and_place_config(robot_config_dir, robot_config)
     cmd += " -v " + robot_config_dir + ":" + home_directory + "/configuration"
 
@@ -284,11 +284,21 @@ def main():
         if code != 0:
             raise RuntimeError("Failed to create container")
         net_config.configure_iiwa_network()
-        code = subprocess.call(["nvidia-docker", "start", "-ai", container_name])
-        subprocess.check_call(["docker", "rm", container_name])
-        net_config.restore_configuration()
-        os.system(cmd_endxhost)
-        shutil.rmtree(robot_config_dir)
+        docker_proc = subprocess.Popen(["nvidia-docker", "start", "-a", container_name])
+        print "returncode", docker_proc.returncode
+        try:
+            #code = subprocess.call(["nvidia-docker", "start", "-a", container_name])
+            docker_proc.wait()
+        finally:
+            if docker_proc.returncode is None:
+                print "Terminating docker instance..."
+                subprocess.check_call(["docker", "stop", "-t", "1", container_name])
+                docker_proc.wait()
+
+            subprocess.check_call(["docker", "rm", container_name])
+            net_config.restore_configuration()
+            os.system(cmd_endxhost)
+            shutil.rmtree(robot_config_dir)
 	# Squash return code to 0/1, as
 	# Docker's very large return codes
 	# were tricking Jenkins' failure

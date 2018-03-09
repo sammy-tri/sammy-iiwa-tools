@@ -50,7 +50,7 @@ cmd "7.lcm-spy" {
     host = "localhost";
 }
 cmd "4.1.clutter-clearing" {
-    exec = "$HOME/enabling-anzu/bazel-bin/rand_obj_picking/apps/clutter_clearing2";
+    exec = "bash -c 'cd $HOME/enabling-anzu; ./run //rand_obj_picking/apps:clutter_clearing2'";
     host = "localhost";
 }
 cmd "5.drake-visualizer" {

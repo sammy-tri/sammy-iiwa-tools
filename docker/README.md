@@ -14,7 +14,7 @@ https://github.com/sammy-tri/spartan/tree/no_ros_prereqs which
 splits the prereq install not to include ROS deps.
 
 `git clone https://github.com/sammy-tri/spartan.git`
-`git checkout fda56e4fc4beddb0cad6fb477fe07b2e15decaec`
+`git checkout 6f838bdb425c66c8496b32265e387f3fd419eb2c`
 
 Example: `docker_build_base.py -s ~/spartan -i my-image-name -u robot-lab`
 
@@ -58,12 +58,13 @@ Next, build spartan.  If you're updating an existing image, this is a
 convenient time to update the drake/spartan source.
 
     rm -rf build && mkdir build && cd build && cmake .. -DCMAKE_C_COMPILER_LAUNCHER=/usr/bin/ccache -DCMAKE_CXX_COMPILER_LAUNCHER=/usr/bin/ccache -DWITH_IIWA_DRIVER_TRI=OFF -DWITH_PERCEPTION=ON -DWITH_SCHUNK_DRIVER=OFF -DWITH_SNOPT=ON -DWITH_ROS=OFF -DWITH_IIWA_DRIVER_RLG=OFF
-    make -j
 
-Next, checkout (into the docker user's home directory) and build
-https://github.com/RobotLocomotion/drake-iiwa-driver,
-https://github.com/RobotLocomotion/drake-schunk-driver, and
-https://github.com/RobotLocomotion/optitrack-driver
+    env PKG_CONFIG_PATH=/opt/lcm/1.3.95.20180130/lib/pkgconfig/ make -j
+
+Next, checkout (into the docker user's home directory) and build:
+    https://github.com/RobotLocomotion/drake-iiwa-driver.git
+    https://github.com/RobotLocomotion/drake-schunk-driver.git
+    https://github.com/RobotLocomotion/optitrack-driver.git
 using `bazel`
 according to their instructions.
 

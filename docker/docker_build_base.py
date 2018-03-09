@@ -8,12 +8,6 @@ import sys
 import tarfile
 import tempfile
 
-# These specify a version of spartan living in
-# https://github.com/sammy-tri/spartan/tree/no_ros_prereqs which
-# splits the prereq install not to include ROS deps.
-_DEFAULT_SPARTAN_REPO = "https://github.com/sammy-tri/spartan.git"
-_DEFAULT_SPARTAN_REV = "fda56e4fc4beddb0cad6fb477fe07b2e15decaec"
-
 # Build a tarfile containing the docker context
 def make_context_tar(spartan_path):
     (fd, path) = tempfile.mkstemp()
